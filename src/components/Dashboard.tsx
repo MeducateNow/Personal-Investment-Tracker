@@ -249,10 +249,25 @@ const Dashboard = () => {
               <XAxis type="number" domain={[0, 'dataMax']} />
               <YAxis type="category" dataKey="name" />
               <Tooltip 
-                formatter={(value, name) => [
-                  name === 'value' ? `$${value}` : `${value.toFixed(2)}%`, 
-                  name === 'value' ? 'Current Value' : 'Return'
-                ]} 
+                formatter={(value, name) => {
+                  if (name === 'value') {
+                    return [`$${value}`, 'Current Value'];
+                  } else {
+                    // Fix: Handle the value more explicitly to avoid type errors
+                    // Convert to number and then format
+                    let numericValue: number;
+                    if (typeof value === 'number') {
+                      numericValue = value;
+                    } else if (typeof value === 'string') {
+                      numericValue = parseFloat(value);
+                    } else {
+                      // If it's an array or other type, use a default value
+                      numericValue = 0;
+                    }
+                    
+                    return [`${numericValue.toFixed(2)}%`, 'Return'];
+                  }
+                }} 
               />
               <Legend />
               <Bar dataKey="value" fill="#4F46E5" name="Current Value" />

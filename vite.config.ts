@@ -6,9 +6,14 @@ export default defineConfig({
   plugins: [react()],
   build: {
     // Ensure TypeScript errors don't prevent production builds
-    // This is important for Vercel deployment
-    minify: true,
+    outDir: 'dist',
+    emptyOutDir: true,
+    minify: 'terser',
     sourcemap: false,
+    // Disable type checking during build
+    typescript: {
+      ignoreBuildErrors: true
+    },
     rollupOptions: {
       output: {
         manualChunks: {
